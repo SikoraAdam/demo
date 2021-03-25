@@ -1,0 +1,40 @@
+version: "3.9"
+services:
+  demo:
+    build:
+      context: .
+      network: host
+    container_name: demo
+    ports:
+      - 9095:9095
+    depends_on:
+      - jenkins
+      - elasticsearch
+      - postgres
+
+  jenkins:
+    image: jenkins/jenkins
+    ports:
+      - 8080:8080
+    container_name: demo-jenkins
+#    bbc3a89a867845379ac15b5945f6179c
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.12.0
+    ports:
+      - 9200:9200
+      - 9300:9300
+    environment:
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    container_name: demo-elasticsearch
+
+  postgres:
+    image: postgres
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    container_name: demo-postgres
